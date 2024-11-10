@@ -2,6 +2,8 @@
 /dist
 /node_modules
 /build
+/postgres
+/pgadmin
 
 # Logs
 logs
@@ -11,6 +13,8 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
+
+package-lock.json
 
 # OS
 .DS_Store
