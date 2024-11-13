@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './modules/auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { UsuariosModule } from './modules/usuarios/usuarios.module';
 import { GruposModule } from './modules/grupos/grupos.module';
 import { PruebasModule } from './modules/pruebas/pruebas.module';
