@@ -1,7 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { GruposService } from './grupos.service';
 import { CreateGrupoDto } from './dto/create-grupo.dto';
 import { UpdateGrupoDto } from './dto/update-grupo.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('grupos')
 export class GruposController {
@@ -13,22 +24,25 @@ export class GruposController {
   }
 
   @Get()
-  findAll() {
-    return this.gruposService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.gruposService.findAll(paginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.gruposService.findOne(+id);
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.gruposService.findOne(term);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGrupoDto: UpdateGrupoDto) {
-    return this.gruposService.update(+id, updateGrupoDto);
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateGrupoDto: UpdateGrupoDto,
+  ) {
+    return this.gruposService.update(id, updateGrupoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.gruposService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.gruposService.remove(id);
   }
 }

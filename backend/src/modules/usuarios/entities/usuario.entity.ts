@@ -2,30 +2,61 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   CreateDateColumn,
-  OneToMany,
+  ManyToMany,
+  JoinTable,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 import { Grupo } from 'src/modules/grupos/entities/grupo.entity';
-import { Prueba } from 'src/modules/pruebas/entities/prueba.entity';
 
 @Entity('usuarios')
 export class Usuario {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({
+    type: 'text',
+  })
   nombre: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({
+    type: 'text',
+    unique: true,
+  })
   email: string;
 
-  @ManyToOne(() => Grupo, (grupo) => grupo.usuarios)
-  grupo: Grupo;
-
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   fechaRegistro: Date;
 
-  @OneToMany(() => Prueba, (prueba) => prueba.usuario)
-  pruebas: Prueba[];
+  @ManyToMany(() => Grupo, (grupo) => grupo.usuarios)
+  @JoinTable({
+    name: 'usuario_grupos',
+  })
+  grupos: Grupo[];
+
+  //@OneToMany(() => Prueba, (prueba) => prueba.usuario)
+  //pruebas: Prueba[];
+
+  // --
+  @BeforeInsert()
+  checkNamEmailInsert() {
+    this.nombre = this.nombre
+      .toLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
+    this.email = this.email
+      .toLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
+  }
+
+  // --
+  @BeforeUpdate()
+  checkNamEmailUpdate() {
+    this.checkNamEmailInsert();
+  }
 }

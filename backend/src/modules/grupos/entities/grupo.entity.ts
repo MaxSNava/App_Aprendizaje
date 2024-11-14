@@ -1,17 +1,45 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  BeforeInsert,
+  BeforeUpdate,
+} from 'typeorm';
 import { Usuario } from 'src/modules/usuarios/entities/usuario.entity';
 
 @Entity('grupos')
 export class Grupo {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({
+    type: 'text',
+    unique: true,
+  })
   nombre: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
   descripcion: string;
 
-  @OneToMany(() => Usuario, (usuario) => usuario.grupo)
+  @ManyToMany(() => Usuario, (usuario) => usuario.grupos)
   usuarios: Usuario[];
+
+  // --
+  @BeforeInsert()
+  checkNameInsert() {
+    this.nombre = this.nombre
+      .toLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
+  }
+
+  // --
+  @BeforeUpdate()
+  checkNameUpdate() {
+    this.checkNameInsert();
+  }
 }
