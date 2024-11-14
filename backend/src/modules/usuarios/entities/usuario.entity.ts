@@ -7,8 +7,10 @@ import {
   JoinTable,
   BeforeInsert,
   BeforeUpdate,
+  OneToMany,
 } from 'typeorm';
 import { Grupo } from 'src/modules/grupos/entities/grupo.entity';
+import { Prueba } from 'src/modules/pruebas/entities/prueba.entity';
 
 @Entity('usuarios')
 export class Usuario {
@@ -32,16 +34,17 @@ export class Usuario {
   })
   fechaRegistro: Date;
 
+  // -- Relationships --
   @ManyToMany(() => Grupo, (grupo) => grupo.usuarios)
   @JoinTable({
     name: 'usuario_grupos',
   })
   grupos: Grupo[];
 
-  //@OneToMany(() => Prueba, (prueba) => prueba.usuario)
-  //pruebas: Prueba[];
+  @OneToMany(() => Prueba, (prueba) => prueba.usuario, { cascade: true })
+  pruebas: Prueba[];
 
-  // --
+  // -- BeforeInsert and BeforeUpdate --
   @BeforeInsert()
   checkNamEmailInsert() {
     this.nombre = this.nombre
@@ -54,7 +57,6 @@ export class Usuario {
       .replaceAll("'", '');
   }
 
-  // --
   @BeforeUpdate()
   checkNamEmailUpdate() {
     this.checkNamEmailInsert();

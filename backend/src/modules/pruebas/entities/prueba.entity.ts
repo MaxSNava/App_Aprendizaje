@@ -3,31 +3,30 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  OneToMany,
+  ManyToOne,
 } from 'typeorm';
-// import { Usuario } from 'src/modules/usuarios/entities/usuario.entity';
-import { RespuestaVark } from './vark';
-import { RespuestaMbti } from './mbti/respuestas_mbti.entity';
+import { Usuario } from 'src/modules/usuarios/entities/usuario.entity';
 
 @Entity('pruebas')
 export class Prueba {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({
+    type: 'text',
+  })
   tipoPrueba: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   fechaRealizacion: Date;
 
-  // @ManyToOne(() => Usuario, (usuario) => usuario.pruebas, {
-  //   onDelete: 'CASCADE',
-  // })
-  // usuario: Usuario;
-
-  @OneToMany(() => RespuestaVark, (respuesta) => respuesta.prueba)
-  respuestasVark: RespuestaVark[];
-
-  @OneToMany(() => RespuestaMbti, (respuesta) => respuesta.prueba)
-  respuestasMbti: RespuestaMbti[];
+  // -- Relationships --
+  @ManyToOne(() => Usuario, (usuario) => usuario.pruebas, {
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
+  usuario: Usuario;
 }

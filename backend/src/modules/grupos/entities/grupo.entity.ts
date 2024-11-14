@@ -25,10 +25,11 @@ export class Grupo {
   })
   descripcion: string;
 
+  // -- Relationships --
   @ManyToMany(() => Usuario, (usuario) => usuario.grupos)
   usuarios: Usuario[];
 
-  // --
+  // -- BeforeInsert and BeforeUpdate --
   @BeforeInsert()
   checkNameInsert() {
     this.nombre = this.nombre
@@ -37,7 +38,6 @@ export class Grupo {
       .replaceAll("'", '');
   }
 
-  // --
   @BeforeUpdate()
   checkNameUpdate() {
     this.checkNameInsert();

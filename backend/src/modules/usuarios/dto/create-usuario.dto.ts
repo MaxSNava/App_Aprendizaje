@@ -1,5 +1,4 @@
 import { IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
-// import { Prueba } from 'src/modules/pruebas/entities/prueba.entity';
 
 export class CreateUsuarioDto {
   @IsString()

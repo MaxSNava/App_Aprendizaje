@@ -1,13 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Prueba } from '../prueba.entity';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('resultados_mbti')
 export class ResultadoMbti {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @ManyToOne(() => Prueba, { onDelete: 'CASCADE' })
-  prueba: Prueba;
 
   @Column({ type: 'int', default: 0 })
   extrovertido: number;
