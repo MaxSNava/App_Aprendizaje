@@ -1,9 +1,8 @@
-import { HomePage } from "./components/HomePage"
+import { RouterProvider } from 'react-router-dom';
+import { router } from './presentation/routes/router';
 
 export const App = () => {
   return (
-    <div className="font-sans antialiased bg-gray-100 min-h-screen">
-      <HomePage />
-    </div>
+    <RouterProvider router={router}></RouterProvider>
   )
 }
