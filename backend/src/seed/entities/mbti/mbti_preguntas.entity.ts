@@ -9,9 +9,9 @@ export class MbtiPregunta {
   @Column({ type: 'text' })
   textoPregunta: string;
 
-  @Column({ type: 'varchar', length: 50 })
-  dimension: string; // Ejemplo: "E/I", "S/N", "T/F", "J/P"
+  @Column({ type: 'varchar', length: 2 })
+  dimension: string; // Ejemplo: 'E/I', 'S/N', 'T/F', 'J/P'
 
-  @OneToMany(() => MbtiOpcion, (opcion) => opcion.pregunta)
+  @OneToMany(() => MbtiOpcion, (opcion) => opcion.pregunta, { cascade: true })
   opciones: MbtiOpcion[];
 }

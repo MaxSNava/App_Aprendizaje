@@ -6,14 +6,14 @@ export class VarkOpcion {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: 'varchar', length: 255 })
+  textoOpcion: string;
+
+  @Column({ type: 'varchar', length: 1 }) // V, A, R, K
+  estilo: string;
+
   @ManyToOne(() => VarkPregunta, (pregunta) => pregunta.opciones, {
     onDelete: 'CASCADE',
   })
   pregunta: VarkPregunta;
-
-  @Column({ type: 'varchar', length: 255 })
-  textoOpcion: string;
-
-  @Column({ type: 'varchar', length: 50 })
-  estilo: string;
 }

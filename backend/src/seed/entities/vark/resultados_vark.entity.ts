@@ -2,8 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('resultados_vark')
 export class ResultadoVark {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ type: 'int', default: 0 })
   visual: number;
@@ -18,5 +18,5 @@ export class ResultadoVark {
   kinestesico: number;
 
   @Column({ type: 'varchar', length: 50 })
-  tipoResultado: string;
+  tipoResultado: string; // Ejemplo: 'Visual', 'Auditivo', etc.
 }

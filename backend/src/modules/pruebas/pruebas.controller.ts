@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { PruebasService } from './pruebas.service';
 import { CreatePruebaDto } from './dto/create-prueba.dto';
@@ -27,18 +28,21 @@ export class PruebasController {
     return this.pruebasService.findAll(paginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.pruebasService.findOne(+id);
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.pruebasService.findOnePlain(term);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePruebaDto: UpdatePruebaDto) {
-    return this.pruebasService.update(+id, updatePruebaDto);
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updatePruebaDto: UpdatePruebaDto,
+  ) {
+    return this.pruebasService.update(id, updatePruebaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pruebasService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.pruebasService.remove(id);
   }
 }

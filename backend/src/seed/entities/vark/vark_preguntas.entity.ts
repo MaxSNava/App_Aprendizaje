@@ -9,6 +9,6 @@ export class VarkPregunta {
   @Column({ type: 'text' })
   textoPregunta: string;
 
-  @OneToMany(() => VarkOpcion, (opcion) => opcion.pregunta)
+  @OneToMany(() => VarkOpcion, (opcion) => opcion.pregunta, { cascade: true })
   opciones: VarkOpcion[];
 }

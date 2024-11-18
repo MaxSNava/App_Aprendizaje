@@ -3,14 +3,16 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreatePruebaDto } from './dto/create-prueba.dto';
 import { UpdatePruebaDto } from './dto/update-prueba.dto';
-import { Prueba } from './entities/prueba.entity';
-import { DataSource, Repository } from 'typeorm';
 import { Usuario } from '../usuarios/entities/usuario.entity';
+import { Prueba } from './entities/prueba.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class PruebasService {
@@ -19,10 +21,8 @@ export class PruebasService {
   constructor(
     @InjectRepository(Prueba)
     private readonly pruebaRepository: Repository<Prueba>,
-
     @InjectRepository(Usuario)
     private readonly usuarioRepository: Repository<Usuario>,
-
     private readonly dataSource: DataSource,
   ) {}
 
@@ -72,15 +72,66 @@ export class PruebasService {
     }));
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} prueba`;
+  async findOne(term: string) {
+    let prueba: Prueba;
+    const queryBuilder = this.pruebaRepository.createQueryBuilder('prueba');
+    if (isUUID(term)) {
+      prueba = await queryBuilder
+        .where(`prueba.id = :id`, { id: term })
+        .leftJoinAndSelect('prueba.usuario', 'usuario')
+        .getOne();
+    } else {
+      prueba = await queryBuilder
+        .where(`LOWER("tipoPrueba") =:tipoPrueba`, {
+          tipoPrueba: term.toLowerCase(),
+        })
+        .leftJoinAndSelect('prueba.usuario', 'usuario')
+        .getOne();
+    }
+    if (!prueba)
+      throw new NotFoundException(`Prueba con término ${term} no encontrado`);
+    return prueba;
   }
 
-  update(id: number, updatePruebaDto: UpdatePruebaDto) {
-    return `This action updates a #${id} prueba`;
+  async findOnePlain(term: string) {
+    const { usuario, ...data } = await this.findOne(term);
+    return {
+      ...data,
+      usuario: usuario.nombre,
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} prueba`;
+  async update(id: string, updatePruebaDto: UpdatePruebaDto) {
+    const { usuarioId, ...data } = updatePruebaDto;
+    const prueba = await this.pruebaRepository.preload({ id, ...data });
+    if (!prueba) throw new NotFoundException(`Prueba #${id} no encontrada`);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      if (usuarioId) {
+        await queryRunner.manager
+          .createQueryBuilder()
+          .relation(Prueba, 'usuario')
+          .of(prueba)
+          .remove(prueba.usuario);
+      }
+      await queryRunner.manager.save(prueba);
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+      return this.findOnePlain(id);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
+      this.handleDBExceptions(error);
+    }
+  }
+
+  async remove(id: string) {
+    const prueba = await this.findOne(id);
+    await this.pruebaRepository.remove(prueba);
+    return {
+      message: `Prueba #${id} eliminada`,
+    };
   }
 }

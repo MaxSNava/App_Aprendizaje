@@ -2,8 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('resultados_mbti')
 export class ResultadoMbti {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ type: 'int', default: 0 })
   extrovertido: number;
@@ -29,6 +29,6 @@ export class ResultadoMbti {
   @Column({ type: 'int', default: 0 })
   perceptivo: number;
 
-  @Column({ type: 'varchar', length: 4 })
-  tipoPersonalidad: string; // Ejemplo: "INTJ", "ENFP", etc.
+  @Column({ type: 'varchar', length: 4 }) // Ejemplo: 'ISTJ', 'ENFP'
+  tipoPersonalidad: string;
 }

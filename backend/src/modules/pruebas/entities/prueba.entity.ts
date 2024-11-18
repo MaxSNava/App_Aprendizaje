@@ -4,8 +4,12 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Usuario } from 'src/modules/usuarios/entities/usuario.entity';
+import { ResultadoVark } from 'src/seed/entities/vark';
+import { ResultadoMbti } from 'src/seed/entities/mbti';
 
 @Entity('pruebas')
 export class Prueba {
@@ -29,4 +33,12 @@ export class Prueba {
     nullable: true,
   })
   usuario: Usuario;
+
+  @OneToOne(() => ResultadoVark, { nullable: true, cascade: true })
+  @JoinColumn()
+  resultadoVark: ResultadoVark;
+
+  @OneToOne(() => ResultadoMbti, { nullable: true, cascade: true })
+  @JoinColumn()
+  resultadoMbti: ResultadoMbti;
 }

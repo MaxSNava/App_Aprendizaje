@@ -6,17 +6,17 @@ export class MbtiOpcion {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => MbtiPregunta, (pregunta) => pregunta.opciones, {
-    onDelete: 'CASCADE',
-  })
-  pregunta: MbtiPregunta;
-
   @Column({ type: 'varchar', length: 255 })
   textoOpcion: string;
 
   @Column({ type: 'int' })
-  puntaje: number;
+  puntaje: number; // Puntaje asignado a la respuesta
 
-  @Column({ type: 'varchar', length: 50 })
-  categoria: string; // Ejemplo: "E", "I", "S", "N", "T", "F", "J", "P"
+  @Column({ type: 'varchar', length: 1 }) // Ejemplo: 'E', 'I', 'S', 'N'
+  categoria: string;
+
+  @ManyToOne(() => MbtiPregunta, (pregunta) => pregunta.opciones, {
+    onDelete: 'CASCADE',
+  })
+  pregunta: MbtiPregunta;
 }
