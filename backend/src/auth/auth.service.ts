@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { CreateAuthDto, LoginAuthDto } from './dto';
 import { Auth } from './entities/auth.entity';
-import { JwtPayload } from './interfaces';
+import { JwtPayload, ValidRoles } from './interfaces';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -63,5 +63,45 @@ export class AuthService {
       ...auth,
       token: this.getJwt({ id: auth.id }),
     };
+  }
+
+  async getUserById(id: string) {
+    const user = await this.authRepository.findOneBy({ id });
+    if (!user) throw new BadRequestException(`Usuario con id ${id} no existe`);
+    delete user.password;
+    return user;
+  }
+
+  async getAllUsers() {
+    const users = await this.authRepository.find();
+    users.forEach((user) => delete user.password);
+    return users;
+  }
+
+  async updateUser(id: string, updateAuthDto: Partial<Auth>) {
+    const user = await this.authRepository.preload({ id, ...updateAuthDto });
+    if (!user) throw new BadRequestException(`Usuario con id ${id} no existe`);
+    return this.authRepository.save(user);
+  }
+
+  async toggleActive(id: string) {
+    const user = await this.authRepository.findOneBy({ id });
+    if (!user) throw new BadRequestException(`Usuario con id ${id} no existe`);
+    user.isActive = !user.isActive;
+    return this.authRepository.save(user);
+  }
+
+  async updateRoles(id: string, roles: ValidRoles[]) {
+    const user = await this.authRepository.findOneBy({ id });
+    if (!user) throw new BadRequestException(`Usuario con id ${id} no existe`);
+    user.roles = roles;
+    return this.authRepository.save(user);
+  }
+
+  async deleteUser(id: string) {
+    const result = await this.authRepository.delete({ id });
+    if (result.affected === 0)
+      throw new BadRequestException(`Usuario con id ${id} no existe`);
+    return { message: `Usuario con id ${id} ha sido eliminado.` };
   }
 }

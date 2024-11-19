@@ -1,6 +1,17 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto, LoginAuthDto } from './dto';
+import { CreateAuthDto, LoginAuthDto, UpdateAuthDto } from './dto';
+import { ValidRoles } from './interfaces';
+import { Auth } from './decorators';
 
 @Controller('auth')
 export class AuthController {
@@ -14,5 +25,47 @@ export class AuthController {
   @Post('login')
   login(@Body() loginAuthDto: LoginAuthDto) {
     return this.authService.login(loginAuthDto);
+  }
+
+  @Get(':id')
+  @Auth()
+  getUserById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.authService.getUserById(id);
+  }
+
+  @Get()
+  @Auth()
+  getAllUsers() {
+    return this.authService.getAllUsers();
+  }
+
+  @Patch(':id')
+  @Auth()
+  updateUser(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateAuthDto: UpdateAuthDto,
+  ) {
+    return this.authService.updateUser(id, updateAuthDto);
+  }
+
+  @Patch(':id/activate')
+  @Auth(ValidRoles.admin)
+  toggleActive(@Param('id', ParseUUIDPipe) id: string) {
+    return this.authService.toggleActive(id);
+  }
+
+  @Patch(':id/roles')
+  @Auth(ValidRoles.admin)
+  updateRoles(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('roles') roles: ValidRoles[],
+  ) {
+    return this.authService.updateRoles(id, roles);
+  }
+
+  @Delete(':id')
+  @Auth(ValidRoles.superUser)
+  deleteUser(@Param('id', ParseUUIDPipe) id: string) {
+    return this.authService.deleteUser(id);
   }
 }
