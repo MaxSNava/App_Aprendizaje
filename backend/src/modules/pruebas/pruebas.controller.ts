@@ -45,4 +45,16 @@ export class PruebasController {
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.pruebasService.remove(id);
   }
+
+  @Post(':pruebaId/vark')
+  async guardarRespuestasVark(
+    @Param('pruebaId') pruebaId: string,
+    @Body()
+    respuestas: {
+      preguntaId: number;
+      opcionId: number;
+    }[],
+  ) {
+    return this.pruebasService.guardarRespuestasVark(pruebaId, respuestas);
+  }
 }

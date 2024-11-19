@@ -13,6 +13,12 @@ import { Usuario } from '../usuarios/entities/usuario.entity';
 import { Prueba } from './entities/prueba.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { isUUID } from 'class-validator';
+import {
+  RespuestaVark,
+  ResultadoVark,
+  VarkOpcion,
+  VarkPregunta,
+} from 'src/seed/entities/vark';
 
 @Injectable()
 export class PruebasService {
@@ -23,6 +29,16 @@ export class PruebasService {
     private readonly pruebaRepository: Repository<Prueba>,
     @InjectRepository(Usuario)
     private readonly usuarioRepository: Repository<Usuario>,
+    // ------------------- VARK -------------------
+    @InjectRepository(RespuestaVark)
+    private readonly respuestaVarkRepository: Repository<RespuestaVark>,
+    @InjectRepository(ResultadoVark)
+    private readonly resultadoVarkRepository: Repository<ResultadoVark>,
+    @InjectRepository(VarkPregunta)
+    private readonly varkPreguntaRepository: Repository<VarkPregunta>,
+    @InjectRepository(VarkOpcion)
+    private readonly varkOpcionRepository: Repository<VarkOpcion>,
+    // ---------------------------------------------
     private readonly dataSource: DataSource,
   ) {}
 
@@ -133,5 +149,95 @@ export class PruebasService {
     return {
       message: `Prueba #${id} eliminada`,
     };
+  }
+
+  // ------------------- VARK -------------------
+  async guardarRespuestasVark(
+    pruebaId: string,
+    respuestas: { preguntaId: number; opcionId: number }[],
+  ) {
+    // Validar que la prueba existe y es de tipo VARK
+    const prueba = await this.pruebaRepository.findOne({
+      where: { id: pruebaId },
+    });
+
+    if (!prueba || prueba.tipoPrueba.toLowerCase() !== 'vark')
+      throw new Error('Prueba no válida o no es de tipo VARK');
+
+    // Guardar las respuestas en la tabla `respuestas_vark`
+    const respuestasEntidades = respuestas.map((respuesta) =>
+      this.respuestaVarkRepository.create({
+        prueba: { id: pruebaId },
+        pregunta: { id: respuesta.preguntaId },
+        opcion: { id: respuesta.opcionId },
+      }),
+    );
+    await this.respuestaVarkRepository.save(respuestasEntidades);
+
+    // Calcular los resultados
+    const resultado = await this.calcularResultadoVark(pruebaId);
+
+    // Guardar el resultado en `resultados_vark`
+    const nuevoResultado = this.resultadoVarkRepository.create(resultado);
+    const savedResultado =
+      await this.resultadoVarkRepository.save(nuevoResultado);
+
+    // Relacionar el resultado con la prueba
+    prueba.resultadoVark = savedResultado;
+    await this.pruebaRepository.save(prueba);
+
+    return savedResultado;
+  }
+
+  private async calcularResultadoVark(
+    pruebaId: string,
+  ): Promise<Partial<ResultadoVark>> {
+    const respuestas = await this.respuestaVarkRepository.find({
+      where: { prueba: { id: pruebaId } },
+      relations: ['opcion'],
+    });
+
+    // Calcular los puntajes por estilo
+    const resultado = {
+      visual: 0,
+      auditivo: 0,
+      lecturaEscritura: 0,
+      kinestesico: 0,
+      tipoResultado: '',
+    };
+
+    respuestas.forEach((respuesta) => {
+      switch (respuesta.opcion.estilo) {
+        case 'V':
+          resultado.visual++;
+          break;
+        case 'A':
+          resultado.auditivo++;
+          break;
+        case 'R':
+          resultado.lecturaEscritura++;
+          break;
+        case 'K':
+          resultado.kinestesico++;
+          break;
+      }
+    });
+
+    // Determinar el estilo dominante
+    const maxPuntaje = Math.max(
+      resultado.visual,
+      resultado.auditivo,
+      resultado.lecturaEscritura,
+      resultado.kinestesico,
+    );
+    if (maxPuntaje === resultado.visual) resultado.tipoResultado = 'Visual';
+    else if (maxPuntaje === resultado.auditivo)
+      resultado.tipoResultado = 'Auditivo';
+    else if (maxPuntaje === resultado.lecturaEscritura)
+      resultado.tipoResultado = 'Lectura/Escritura';
+    else if (maxPuntaje === resultado.kinestesico)
+      resultado.tipoResultado = 'Kinestésico';
+
+    return resultado;
   }
 }

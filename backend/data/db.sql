@@ -56,7 +56,7 @@ CREATE TABLE public.grupos (
 CREATE TABLE public.mbti_preguntas (
 	id serial4 NOT NULL,
 	"textoPregunta" text NOT NULL,
-	dimension varchar(2) NOT NULL,
+	dimension varchar(4) NOT NULL,
 	CONSTRAINT "PK_6e051f30290eef900509e3ccf82" PRIMARY KEY (id)
 );
 

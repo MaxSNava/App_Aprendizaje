@@ -19,6 +19,9 @@ export class Contacto {
   @Column({ type: 'text' })
   mensaje: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   fecha: Date;
 }

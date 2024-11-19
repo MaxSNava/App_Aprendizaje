@@ -1,19 +1,9 @@
 import { BookOpen, Brain, Users, FileText } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export const HomePage = () => {
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="bg-blue-600 text-white py-8">
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <h1 className="text-4xl font-bold">Estilos de Aprendizaje y Personalidad</h1>
-          {/* <Link href="/admin" className="bg-white text-blue-600 px-4 py-2 rounded-md font-semibold flex items-center hover:bg-blue-100 transition-colors">
-            <Lock className="mr-2 h-4 w-4" />
-            Admin
-          </Link> */}
-        </div>
-      </header>
-
-      <main className="flex-grow container mx-auto px-4 py-8">
+    <>
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6">Descubre tu Estilo de Aprendizaje y Personalidad</h2>
           <p className="text-lg mb-4">
@@ -38,9 +28,9 @@ export const HomePage = () => {
                 <li>Lectura/Escritura: Prefiere información presentada como palabras.</li>
                 <li>Kinestésico: Aprende mejor a través de la experiencia y la práctica.</li>
               </ul>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors">
+              <Link to='/vark' className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors">
                 Descubre tu estilo VARK
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -103,13 +93,6 @@ export const HomePage = () => {
             </div>
           </div>
         </section>
-      </main>
-
-      <footer className="bg-gray-100 py-4">
-        <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2024 Estilos de Aprendizaje y Personalidad. Todos los derechos reservados.</p>
-        </div>
-      </footer>
-    </div>
+    </>
   )
 }

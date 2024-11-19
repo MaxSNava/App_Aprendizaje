@@ -9,7 +9,7 @@ export class MbtiPregunta {
   @Column({ type: 'text' })
   textoPregunta: string;
 
-  @Column({ type: 'varchar', length: 2 })
+  @Column({ type: 'varchar', length: 4 })
   dimension: string; // Ejemplo: 'E/I', 'S/N', 'T/F', 'J/P'
 
   @OneToMany(() => MbtiOpcion, (opcion) => opcion.pregunta, { cascade: true })

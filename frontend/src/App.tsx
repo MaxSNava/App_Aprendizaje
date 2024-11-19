@@ -3,6 +3,7 @@ import { router } from './presentation/routes/router';
 
 export const App = () => {
   return (
-    <RouterProvider router={router}></RouterProvider>
+    <RouterProvider router={router}>
+    </RouterProvider>
   )
 }

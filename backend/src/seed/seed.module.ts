@@ -34,5 +34,6 @@ import {
     AuthModule,
     PruebasModule,
   ],
+  exports: [TypeOrmModule],
 })
 export class SeedModule {}
