@@ -5,6 +5,7 @@ export * from "./auth/AdminDashboardPage";
 export * from "./auth/AdminAdministracionPage";
 
 export * from "./vark/VarkTestPage";
+export * from "./vark/VarkResPage";
 
 export * from "./mbti/MbtiTestPage";
 

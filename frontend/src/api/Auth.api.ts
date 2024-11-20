@@ -16,7 +16,7 @@ export async function authenticateAuth(formData: AuthLoginForm) {
 
 export async function getAuth() {
   try {
-    const { data } = await api("/auth");
+    const { data } = await api.get("/auth");
     const response = authSchema.safeParse(data);
     console.log("Puta madre");
     console.log(response);

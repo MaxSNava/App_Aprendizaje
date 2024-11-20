@@ -182,6 +182,27 @@ export class PruebasService {
     }
   }
 
+  async obtenerResultadosVark(pruebaId: string): Promise<ResultadoVark> {
+    // Validar si la prueba existe
+    const prueba = await this.pruebaRepository.findOne({
+      where: { id: pruebaId },
+      relations: ['resultadoVark'], // Cargar la relación con resultados
+    });
+
+    if (!prueba) {
+      throw new NotFoundException(`Prueba con ID ${pruebaId} no encontrada`);
+    }
+
+    if (!prueba.resultadoVark) {
+      throw new NotFoundException(
+        `Resultados para la prueba con ID ${pruebaId} no encontrados`,
+      );
+    }
+
+    // Devolver los resultados asociados
+    return prueba.resultadoVark;
+  }
+
   async guardarRespuestasVark(
     pruebaId: string,
     respuestas: { preguntaId: number; opcionId: number }[],

@@ -34,7 +34,7 @@ export class Prueba {
   })
   usuario: Usuario;
 
-  @OneToOne(() => ResultadoVark, { nullable: true, cascade: true })
+  @OneToOne(() => ResultadoVark, { nullable: true, cascade: true, eager: true })
   @JoinColumn()
   resultadoVark: ResultadoVark;
 

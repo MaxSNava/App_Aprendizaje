@@ -62,4 +62,11 @@ export class PruebasController {
   ) {
     return this.pruebasService.guardarRespuestasVark(pruebaId, respuestas);
   }
+
+  @Get(':pruebaId/vark/resultados')
+  async obtenerResultadosVark(
+    @Param('pruebaId', ParseUUIDPipe) pruebaId: string,
+  ) {
+    return this.pruebasService.obtenerResultadosVark(pruebaId);
+  }
 }

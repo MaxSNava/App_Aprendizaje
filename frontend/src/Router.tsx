@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { MainLayout, AuthLayout } from "./presentation/layouts"
-import { HomePage, LoginPage, NotFoundPage, TestPage, AdminHomePage, AdminDashboardPage, AdminAdministracionPage, VarkTestPage, MbtiTestPage } from "./presentation/pages"
+import { HomePage, LoginPage, NotFoundPage, TestPage, AdminHomePage, AdminDashboardPage, AdminAdministracionPage, VarkTestPage, MbtiTestPage, VarkResPage } from "./presentation/pages"
 import { PrivateRoute } from "./presentation/components"
 
 
@@ -13,6 +13,8 @@ export const Router = () => {
           <Route path="/" element={ <HomePage /> } />
           <Route path="/test" element={ <TestPage /> } />
           <Route path="/vark" element={ <VarkTestPage /> } />
+          <Route path="/vark/res" element={ <VarkResPage /> } />
+
           <Route path="/mbti" element={ <MbtiTestPage /> } />
         </Route>
 

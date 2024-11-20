@@ -38,6 +38,35 @@ export type Grupo = z.infer<typeof grupoSchema>;
 export const pruebaSchema = z.object({
   tipoPrueba: z.string(),
   usuarioId: z.string(),
+  preguntaId: z.number(),
+  opcionId: z.number(),
 });
 
 export type Prueba = z.infer<typeof pruebaSchema>;
+export type PruebaFormData = Pick<Prueba, "tipoPrueba" | "usuarioId">;
+export type PruebaVarkRes = Pick<Prueba, "preguntaId" | "opcionId">;
+
+/** Pregunta VARK **/
+export const preguntaVarkSchema = z.object({
+  id: z.number(),
+  textoPregunta: z.string(),
+  opciones: z.array(
+    z.object({
+      id: z.number(),
+      textoOpcion: z.string(),
+      estilo: z.string(),
+    })
+  ),
+});
+
+export type PreguntaVark = z.infer<typeof preguntaVarkSchema>;
+
+export const resultadoVarkSchema = z.object({
+  visual: z.number(),
+  auditivo: z.number(),
+  lecturaEscritura: z.number(),
+  kinestesico: z.number(),
+  tipoResultado: z.string(),
+});
+
+export type ResultadoVark = z.infer<typeof resultadoVarkSchema>;
