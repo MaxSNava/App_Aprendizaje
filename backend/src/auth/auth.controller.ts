@@ -28,7 +28,6 @@ export class AuthController {
   }
 
   @Get(':id')
-  @Auth()
   getUserById(@Param('id', ParseUUIDPipe) id: string) {
     return this.authService.getUserById(id);
   }

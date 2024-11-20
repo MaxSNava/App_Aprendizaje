@@ -46,6 +46,7 @@ export class PruebasController {
     return this.pruebasService.remove(id);
   }
 
+  // ------------------- VARK -------------------
   @Get('vark')
   async getVarkPreguntasYOpciones() {
     return this.pruebasService.getVarkPreguntasYOpciones();
@@ -68,5 +69,27 @@ export class PruebasController {
     @Param('pruebaId', ParseUUIDPipe) pruebaId: string,
   ) {
     return this.pruebasService.obtenerResultadosVark(pruebaId);
+  }
+
+  // ------------------- MBTI -------------------
+  @Get('mbti')
+  async obtenerPreguntasMbti() {
+    return this.pruebasService.obtenerPreguntasMbti();
+  }
+
+  @Post(':pruebaId/mbti')
+  async guardarRespuestasMbti(
+    @Param('pruebaId', ParseUUIDPipe) pruebaId: string,
+    @Body()
+    respuestas: { preguntaId: number; opcionId: number }[],
+  ) {
+    return this.pruebasService.guardarRespuestasMbti(pruebaId, respuestas);
+  }
+
+  @Get(':pruebaId/mbti/resultados')
+  async obtenerResultadosMbti(
+    @Param('pruebaId', ParseUUIDPipe) pruebaId: string,
+  ) {
+    return this.pruebasService.obtenerResultadosMbti(pruebaId);
   }
 }

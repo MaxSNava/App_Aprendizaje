@@ -38,7 +38,7 @@ export class Prueba {
   @JoinColumn()
   resultadoVark: ResultadoVark;
 
-  @OneToOne(() => ResultadoMbti, { nullable: true, cascade: true })
+  @OneToOne(() => ResultadoMbti, { nullable: true, cascade: true, eager: true })
   @JoinColumn()
   resultadoMbti: ResultadoMbti;
 }

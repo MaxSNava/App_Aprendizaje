@@ -19,6 +19,12 @@ import {
   VarkOpcion,
   VarkPregunta,
 } from 'src/seed/entities/vark';
+import {
+  MbtiOpcion,
+  MbtiPregunta,
+  RespuestaMbti,
+  ResultadoMbti,
+} from 'src/seed/entities/mbti';
 
 @Injectable()
 export class PruebasService {
@@ -38,6 +44,15 @@ export class PruebasService {
     private readonly varkPreguntaRepository: Repository<VarkPregunta>,
     @InjectRepository(VarkOpcion)
     private readonly varkOpcionRepository: Repository<VarkOpcion>,
+    // ------------------- MBTI -------------------
+    @InjectRepository(RespuestaMbti)
+    private readonly respuestaMbtiRepository: Repository<RespuestaMbti>,
+    @InjectRepository(ResultadoMbti)
+    private readonly resultadoMbtiRepository: Repository<ResultadoMbti>,
+    @InjectRepository(MbtiPregunta)
+    private readonly mbtiPreguntaRepository: Repository<MbtiPregunta>,
+    @InjectRepository(MbtiOpcion)
+    private readonly mbtiOpcionRepository: Repository<MbtiOpcion>,
     // ---------------------------------------------
     private readonly dataSource: DataSource,
   ) {}
@@ -154,13 +169,8 @@ export class PruebasService {
   // ------------------- VARK -------------------
   async getVarkPreguntasYOpciones() {
     try {
-      // Obtener todas las preguntas de VARK
       const preguntas = await this.varkPreguntaRepository.find();
-
-      // Obtener todas las opciones de VARK
       const opciones = await this.varkOpcionRepository.find();
-
-      // Organizar las preguntas y sus opciones
       const preguntasConOpciones = preguntas.map((pregunta) => {
         return {
           id: pregunta.id,
@@ -175,7 +185,6 @@ export class PruebasService {
             })),
         };
       });
-
       return preguntasConOpciones;
     } catch (error) {
       this.handleDBExceptions(error);
@@ -183,23 +192,19 @@ export class PruebasService {
   }
 
   async obtenerResultadosVark(pruebaId: string): Promise<ResultadoVark> {
-    // Validar si la prueba existe
     const prueba = await this.pruebaRepository.findOne({
       where: { id: pruebaId },
       relations: ['resultadoVark'], // Cargar la relación con resultados
     });
 
-    if (!prueba) {
+    if (!prueba)
       throw new NotFoundException(`Prueba con ID ${pruebaId} no encontrada`);
-    }
 
-    if (!prueba.resultadoVark) {
+    if (!prueba.resultadoVark)
       throw new NotFoundException(
         `Resultados para la prueba con ID ${pruebaId} no encontrados`,
       );
-    }
 
-    // Devolver los resultados asociados
     return prueba.resultadoVark;
   }
 
@@ -290,5 +295,149 @@ export class PruebasService {
       resultado.tipoResultado = 'Kinestésico';
 
     return resultado;
+  }
+
+  // ------------------- MBTI -------------------
+  async obtenerPreguntasMbti() {
+    try {
+      const preguntas = await this.mbtiPreguntaRepository.find({
+        relations: ['opciones'],
+      });
+
+      return preguntas.map((pregunta) => ({
+        id: pregunta.id,
+        textoPregunta: pregunta.textoPregunta,
+        dimension: pregunta.dimension,
+        opciones: pregunta.opciones.map((opcion) => ({
+          id: opcion.id,
+          textoOpcion: opcion.textoOpcion,
+          puntaje: opcion.puntaje,
+          categoria: opcion.categoria,
+        })),
+      }));
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
+  private async calcularResultadoMbti(
+    pruebaId: string,
+  ): Promise<Partial<ResultadoMbti>> {
+    const respuestas = await this.respuestaMbtiRepository.find({
+      where: { prueba: { id: pruebaId } },
+      relations: ['opcion'],
+    });
+
+    const resultado = {
+      extrovertido: 0,
+      introvertido: 0,
+      sensorial: 0,
+      intuitivo: 0,
+      racional: 0,
+      emocional: 0,
+      calificador: 0,
+      perceptivo: 0,
+      tipoPersonalidad: '',
+    };
+
+    respuestas.forEach((respuesta) => {
+      switch (respuesta.opcion.categoria) {
+        case 'E':
+          resultado.extrovertido += respuesta.opcion.puntaje;
+          break;
+        case 'I':
+          resultado.introvertido += respuesta.opcion.puntaje;
+          break;
+        case 'S':
+          resultado.sensorial += respuesta.opcion.puntaje;
+          break;
+        case 'N':
+          resultado.intuitivo += respuesta.opcion.puntaje;
+          break;
+        case 'T':
+          resultado.racional += respuesta.opcion.puntaje;
+          break;
+        case 'F':
+          resultado.emocional += respuesta.opcion.puntaje;
+          break;
+        case 'J':
+          resultado.calificador += respuesta.opcion.puntaje;
+          break;
+        case 'P':
+          resultado.perceptivo += respuesta.opcion.puntaje;
+          break;
+      }
+    });
+
+    resultado.tipoPersonalidad = this.determinarTipoPersonalidad(resultado);
+
+    return resultado;
+  }
+
+  private determinarTipoPersonalidad(
+    resultado: Partial<ResultadoMbti>,
+  ): string {
+    const tipo = [
+      resultado.extrovertido >= resultado.introvertido ? 'E' : 'I',
+      resultado.sensorial >= resultado.intuitivo ? 'S' : 'N',
+      resultado.racional >= resultado.emocional ? 'T' : 'F',
+      resultado.calificador >= resultado.perceptivo ? 'J' : 'P',
+    ];
+    return tipo.join('');
+  }
+
+  async guardarRespuestasMbti(
+    pruebaId: string,
+    respuestas: { preguntaId: number; opcionId: number }[],
+  ) {
+    const prueba = await this.pruebaRepository.findOne({
+      where: { id: pruebaId },
+    });
+
+    if (!prueba || prueba.tipoPrueba.toLowerCase() !== 'mbti') {
+      throw new BadRequestException('Prueba no válida o no es de tipo MBTI');
+    }
+
+    const respuestasEntidades = respuestas.map((respuesta) =>
+      this.respuestaMbtiRepository.create({
+        prueba: { id: pruebaId },
+        pregunta: { id: respuesta.preguntaId },
+        opcion: { id: respuesta.opcionId },
+      }),
+    );
+
+    await this.respuestaMbtiRepository.save(respuestasEntidades);
+
+    const resultado = await this.calcularResultadoMbti(pruebaId);
+
+    const nuevoResultado = this.resultadoMbtiRepository.create(resultado);
+    const savedResultado =
+      await this.resultadoMbtiRepository.save(nuevoResultado);
+
+    prueba.resultadoMbti = savedResultado;
+    await this.pruebaRepository.save(prueba);
+
+    return savedResultado;
+  }
+
+  async obtenerResultadosMbti(pruebaId: string): Promise<ResultadoMbti> {
+    // Buscar la prueba con su resultado relacionado
+    const prueba = await this.pruebaRepository.findOne({
+      where: { id: pruebaId },
+      relations: ['resultadoMbti'], // Cargar la relación con resultados
+    });
+
+    if (!prueba) {
+      throw new NotFoundException(`Prueba con ID ${pruebaId} no encontrada`);
+    }
+
+    if (!prueba.resultadoMbti) {
+      throw new NotFoundException(
+        `Resultados para la prueba con ID ${pruebaId} no encontrados`,
+      );
+    }
+
+    // Retornar los resultados MBTI asociados
+    return prueba.resultadoMbti;
   }
 }
