@@ -46,18 +46,9 @@ export class AuthController {
   }
 
   @Patch(':id/activate')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.superUser)
   toggleActive(@Param('id', ParseUUIDPipe) id: string) {
     return this.authService.toggleActive(id);
-  }
-
-  @Patch(':id/roles')
-  @Auth(ValidRoles.admin)
-  updateRoles(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body('roles') roles: ValidRoles[],
-  ) {
-    return this.authService.updateRoles(id, roles);
   }
 
   @Delete(':id')

@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { ErrorMessage } from '../../components'
 import { authenticateAuth } from '../../../api'
 import { AuthLoginForm } from '../../../types'
-import { User, Eye, EyeOff } from 'lucide-react'
+import { User, Lock, Eye, EyeOff } from 'lucide-react'
 
 export const LoginPage = () => {
   const initialValues: AuthLoginForm = { nickname: '', password: '' }
@@ -36,81 +36,85 @@ export const LoginPage = () => {
   };
 
   return (
-    <>
-      <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+    <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
         Iniciar Sesión
       </h2>
-      <p className="mt-2 text-center text-sm text-gray-600">
-        Llena el formulario para
-        <span className="font-medium text-blue-600 hover:text-blue-500"> iniciar sesión</span>
+      <p className="text-center text-gray-600 mb-8">
+        Llena el formulario para <span className="text-blue-600 font-semibold">iniciar sesión</span>
       </p>
 
-      <form className="mt-8 space-y-6" onSubmit={handleSubmit(handleLogin)} noValidate>
-        <div className="rounded-md shadow-sm -space-y-px">
-          <div>
-            <label htmlFor="nickname" className="sr-only">
-              Nickname
-            </label>
-            <div className="relative">
-              <input
-                id="nickname"
-                type="text"
-                autoComplete="username"
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Nickname"
-                {...register("nickname", {
-                  required: "El nickname es obligatorio",
-                })}
-                onChange={handleNicknameChange}
-              />
-              <User className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-            </div>
-            {errors.nickname && (
-              <ErrorMessage>{errors.nickname.message}</ErrorMessage>
-            )}
+      <form className="space-y-6" onSubmit={handleSubmit(handleLogin)} noValidate>
+        <div className="space-y-2">
+          <label htmlFor="nickname" className="text-sm font-medium text-gray-700">
+            Nickname
+          </label>
+          <div className="relative">
+            <input
+              id="nickname"
+              type="text"
+              autoComplete="username"
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10"
+              placeholder="Nickname"
+              {...register("nickname", {
+                required: "El nickname es obligatorio",
+              })}
+              onChange={handleNicknameChange}
+            />
+            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           </div>
-          <div>
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <div className="relative">
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm pr-10"
-                placeholder="Password"
-                {...register("password", {
-                  required: "El Password es obligatorio",
-                })}
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5 text-gray-400" />
-                ) : (
-                  <Eye className="h-5 w-5 text-gray-400" />
-                )}
-              </button>
-            </div>
-            {errors.password && (
-              <ErrorMessage>{errors.password.message}</ErrorMessage>
-            )}
-          </div>
+          {errors.nickname && (
+            <ErrorMessage>{errors.nickname.message}</ErrorMessage>
+          )}
         </div>
 
-        <div>
-          <button
-            type="submit"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
-          >
-          Inicio de Sesión
-          </button>
+        <div className="space-y-2">
+          <label htmlFor="password" className="text-sm font-medium text-gray-700">
+            Contraseña
+          </label>
+          <div className="relative">
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10"
+              placeholder="Contraseña"
+              {...register("password", {
+                required: "La contraseña es obligatoria",
+              })}
+            />
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <EyeOff size={20} />
+              ) : (
+                <Eye size={20} />
+              )}
+            </button>
+          </div>
+          {errors.password && (
+            <ErrorMessage>{errors.password.message}</ErrorMessage>
+          )}
         </div>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white p-3 rounded-md font-semibold hover:bg-blue-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Iniciar Sesión
+        </button>
       </form>
-    </>
+
+      <p className="mt-8 text-center text-sm text-gray-600">
+        ¿No tienes cuenta?{' '}
+        <Link to="/auth/register" className="font-medium text-blue-600 hover:text-blue-500">
+          Crear Una
+        </Link>
+      </p>
+    </div>
   )
 }

@@ -9,6 +9,7 @@ import {
   MbtiResPage,
   MbtiTestPage,
   NotFoundPage,
+  RegisterPage,
   TestPage,
   VarkResPage,
   VarkTestPage,
@@ -34,6 +35,7 @@ export const Router = () => {
 
         <Route element={ <AuthLayout />}>
           <Route path="/auth/login" element={ <LoginPage /> } />
+          <Route path="/auth/register" element={ <RegisterPage /> } />
           <Route path="/auth/home" element={
             <PrivateRoute>
               <AdminHomePage />

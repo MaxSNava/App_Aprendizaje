@@ -37,7 +37,7 @@ export class Auth {
   @Column({
     type: 'text',
     array: true,
-    default: ['user'],
+    default: ['admin'],
   })
   roles: string[];
 

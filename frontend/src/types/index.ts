@@ -2,16 +2,29 @@ import { z } from "zod";
 
 /** Auth **/
 export const authSchema = z.object({
+  id: z.string(),
   nickname: z.string(),
   password: z.string(),
   password_confirmation: z.string(),
-  current_password: z.string(),
   fullName: z.string(),
   token: z.string(),
+  isActive: z.boolean(),
+  roles: z.array(z.string()), // Asegúrate de que roles es un array
 });
 
 type Auth = z.infer<typeof authSchema>;
 export type AuthLoginForm = Pick<Auth, "nickname" | "password">;
+export type AuthRegistrationForm = Pick<
+  Auth,
+  "nickname" | "password" | "fullName"
+>;
+export const AuthSchemaplus = z.object({
+  id: z.string(),
+  nickname: z.string(),
+  fullName: z.string(),
+  isActive: z.boolean(),
+  roles: z.array(z.string()), // Asegúrate de que roles es un array
+});
 
 /** User **/
 export const userSchema = z.object({

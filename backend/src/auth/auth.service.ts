@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { CreateAuthDto, LoginAuthDto } from './dto';
 import { Auth } from './entities/auth.entity';
-import { JwtPayload, ValidRoles } from './interfaces';
+import { JwtPayload } from './interfaces';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -88,13 +88,6 @@ export class AuthService {
     const user = await this.authRepository.findOneBy({ id });
     if (!user) throw new BadRequestException(`Usuario con id ${id} no existe`);
     user.isActive = !user.isActive;
-    return this.authRepository.save(user);
-  }
-
-  async updateRoles(id: string, roles: ValidRoles[]) {
-    const user = await this.authRepository.findOneBy({ id });
-    if (!user) throw new BadRequestException(`Usuario con id ${id} no existe`);
-    user.roles = roles;
     return this.authRepository.save(user);
   }
 
