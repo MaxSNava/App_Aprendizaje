@@ -7,8 +7,17 @@ export async function createUser(formData: UserFormData) {
     const { data } = await api.post("/usuarios", formData);
     return data;
   } catch (error) {
-    if (isAxiosError(error) && error.response) {
+    if (isAxiosError(error) && error.response)
       throw new Error(error.response.data.message);
-    }
+  }
+}
+
+export async function getUsers() {
+  try {
+    const { data } = await api.get("/usuarios");
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response)
+      throw new Error(error.response.data.message);
   }
 }

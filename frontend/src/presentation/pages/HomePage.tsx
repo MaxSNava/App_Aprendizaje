@@ -28,7 +28,7 @@ export const HomePage = () => {
                 <li>Lectura/Escritura: Prefiere información presentada como palabras.</li>
                 <li>Kinestésico: Aprende mejor a través de la experiencia y la práctica.</li>
               </ul>
-              <Link to='/user' className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors">
+              <Link to='/test' className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors">
                 Descubre tu estilo VARK
               </Link>
             </div>
@@ -53,7 +53,7 @@ export const HomePage = () => {
               <p className="mb-4">
                 Combinando estas preferencias, se obtienen 16 tipos de personalidad distintos.
               </p>
-              <Link to='/user' className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors">
+              <Link to='/test' className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors">
                 Realiza el test MBTI
               </Link>
             </div>

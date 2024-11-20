@@ -1,2 +1,6 @@
+export * from "./pruebas/UserForm";
+
 export * from "./FooterContact";
-export * from "./pruebas/PruebasForm";
+export * from "./ErrorMessage";
+
+export * from "./PrivateRoute";

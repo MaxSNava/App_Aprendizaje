@@ -1,99 +1,77 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Lock } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+import { ErrorMessage } from '../../components'
+import { authenticateAuth } from '../../../api'
+import { AuthLoginForm } from '../../../types'
 
 export const LoginPage = () => {
+  const initialValues: AuthLoginForm = {nickname: '', password: '' }
 
-  const [nickname, setNickname] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm({ defaultValues: initialValues })
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError('')
-    setIsLoading(true)
+  const navigate = useNavigate()
 
-    // Aquí iría la lógica de autenticación real
-    // Por ahora, simularemos un retraso y un error de autenticación
-    setTimeout(() => {
-      setIsLoading(false)
-      setError('Credenciales inválidas. Por favor, intente de nuevo.')
-    }, 1000)
-  }
+  const { mutate } = useMutation ({
+    mutationFn: authenticateAuth,
+    onError: (error) => {
+      toast.error(error.message)
+    },
+    onSuccess: () => {
+      toast.success('Inicio de sesión exitoso')
+      navigate('/auth/home')
+    }
+  })
+
+  const handleLogin = (formData: AuthLoginForm) => mutate(formData)
+
+  const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const lowerCaseValue = event.target.value.toLowerCase();
+    setValue('nickname', lowerCaseValue, { shouldValidate: true });
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center">
-          <Lock className="h-12 w-12 text-blue-600" />
+    <>
+      <h1 className="text-5xl font-black text-white">Iniciar Sesión</h1>
+      <p className="text-2xl font-light text-white mt-5">Llena el formulario para<span className=" text-cyan-500 font-bold"> iniciar sesión</span></p>
+
+      <form className="space-y-8 p-10 mt-10 bg-white" onSubmit={handleSubmit(handleLogin)} noValidate >
+
+        <div className="flex flex-col gap-5">
+          <label className="font-normal text-2xl">Nickname</label>
+          <input 
+            className="w-full p-3 border-gray-300 border"
+            id="nickname" 
+            type="text" 
+            placeholder="Nickname de Registro" 
+            {...register("nickname", {
+              required: "El nickname es obligatorio",
+            })}
+            onChange={handleNicknameChange}
+          />
+          {errors.nickname && (
+            <ErrorMessage>{errors.nickname.message}</ErrorMessage>
+          )}
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Acceso de Administrador
-        </h2>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="nickname" className="block text-sm font-medium text-gray-700">
-                Nickname
-              </label>
-              <div className="mt-1">
-                <input
-                  id="nickname"
-                  name="nickname"
-                  type="text"
-                  autoComplete="username"
-                  required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  value={nickname}
-                  onChange={(e) => setNickname(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Contraseña
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {error && (
-              <div className="text-red-600 text-sm">{error}</div>
-            )}
-
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
-              </button>
-            </div>
-          </form>
-
-          <div className="mt-6">
-            <Link to="/" className="text-sm text-blue-600 hover:text-blue-500">
-              Volver a la página principal
-            </Link>
-          </div>
+        <div className="flex flex-col gap-5">
+          <label className="font-normal text-2xl">Password</label>
+          <input 
+            className="w-full p-3 border-gray-300 border"
+            type="password" 
+            placeholder="Password de Registro" 
+            {...register("password", {
+              required: "El Password es obligatorio",
+            })}
+          />
+          {errors.password && (
+            <ErrorMessage>{errors.password.message}</ErrorMessage>
+          )}
         </div>
-      </div>
-    </div>
+
+        <input className="bg-cyan-600 hover:bg-cyan-700 w-full p-3  text-white font-black  text-xl cursor-pointer" type="submit" value='Iniciar Sesión' />
+      </form>
+    </>
   )
 }

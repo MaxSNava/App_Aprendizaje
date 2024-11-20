@@ -34,13 +34,11 @@ export class AuthController {
   }
 
   @Get()
-  @Auth()
   getAllUsers() {
     return this.authService.getAllUsers();
   }
 
   @Patch(':id')
-  @Auth()
   updateUser(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAuthDto: UpdateAuthDto,
