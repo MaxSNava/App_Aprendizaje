@@ -70,3 +70,40 @@ export const resultadoVarkSchema = z.object({
 });
 
 export type ResultadoVark = z.infer<typeof resultadoVarkSchema>;
+
+/** Pregunta MBTI **/
+export const preguntaMbtiSchema = z.object({
+  id: z.number(),
+  textoPregunta: z.string(),
+  dimension: z.string(),
+  opciones: z.array(
+    z.object({
+      id: z.number(),
+      textoOpcion: z.string(),
+      puntaje: z.number(),
+      categoria: z.string(),
+    })
+  ),
+});
+
+export type PreguntaMbti = z.infer<typeof preguntaMbtiSchema>;
+
+export type PruebaMbtiRes = {
+  preguntaId: number;
+  opcionId: number;
+};
+
+export const resultadoMbtiSchema = z.object({
+  id: z.string(),
+  extrovertido: z.number(),
+  introvertido: z.number(),
+  sensorial: z.number(),
+  intuitivo: z.number(),
+  racional: z.number(),
+  emocional: z.number(),
+  calificador: z.number(),
+  perceptivo: z.number(),
+  tipoPersonalidad: z.string(),
+});
+
+export type ResultadoMbti = z.infer<typeof resultadoMbtiSchema>;
