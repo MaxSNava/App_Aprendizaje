@@ -152,6 +152,36 @@ export class PruebasService {
   }
 
   // ------------------- VARK -------------------
+  async getVarkPreguntasYOpciones() {
+    try {
+      // Obtener todas las preguntas de VARK
+      const preguntas = await this.varkPreguntaRepository.find();
+
+      // Obtener todas las opciones de VARK
+      const opciones = await this.varkOpcionRepository.find();
+
+      // Organizar las preguntas y sus opciones
+      const preguntasConOpciones = preguntas.map((pregunta) => {
+        return {
+          id: pregunta.id,
+          textoPregunta: pregunta.textoPregunta,
+          opciones: opciones
+            //preguntaId === pregunta.id)
+            .filter((opcion) => opcion.preguntaId === pregunta.id)
+            .map((opcion) => ({
+              id: opcion.id,
+              textoOpcion: opcion.textoOpcion,
+              estilo: opcion.estilo,
+            })),
+        };
+      });
+
+      return preguntasConOpciones;
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
   async guardarRespuestasVark(
     pruebaId: string,
     respuestas: { preguntaId: number; opcionId: number }[],

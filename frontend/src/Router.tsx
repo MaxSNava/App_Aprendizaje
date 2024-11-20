@@ -1,19 +1,19 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { MainLayout, AuthLayout } from "./presentation/layouts"
-import { HomePage, LoginPage, NotFound, TestPage, AdminHomePage, AdminDashboard, AdminAdministracion, VarkTest, MbtiTest } from "./presentation/pages"
+import { HomePage, LoginPage, NotFoundPage, TestPage, AdminHomePage, AdminDashboardPage, AdminAdministracionPage, VarkTestPage, MbtiTestPage } from "./presentation/pages"
 import { PrivateRoute } from "./presentation/components"
 
 
 export const Router = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
 
         <Route element={ <MainLayout />}>
           <Route path="/" element={ <HomePage /> } />
           <Route path="/test" element={ <TestPage /> } />
-          <Route path="/vark" element={ <VarkTest /> } />
-          <Route path="/mbti" element={ <MbtiTest /> } />
+          <Route path="/vark" element={ <VarkTestPage /> } />
+          <Route path="/mbti" element={ <MbtiTestPage /> } />
         </Route>
 
         <Route element={ <AuthLayout />}>
@@ -25,18 +25,18 @@ export const Router = () => {
           } />
           <Route path="/auth/dashboard" element={
             <PrivateRoute>
-              <AdminDashboard />
+              <AdminDashboardPage />
             </PrivateRoute>
           } />
           <Route path="/auth/administracion" element={
             <PrivateRoute>
-              <AdminAdministracion />
+              <AdminAdministracionPage />
             </PrivateRoute>
           } />
         </Route>
 
         <Route element={ <AuthLayout />}>
-          <Route path="*" element={ <NotFound /> } />
+          <Route path="*" element={ <NotFoundPage /> } />
         </Route>
 
       </Routes>

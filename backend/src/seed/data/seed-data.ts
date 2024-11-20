@@ -306,7 +306,7 @@ export const initialData: SeedData = {
       opciones: [
         {
           textoOpcion: 'Viendo una demostración.',
-          estilo: 'V',
+          estilo: 'K',
         },
         {
           textoOpcion:
@@ -319,7 +319,7 @@ export const initialData: SeedData = {
         },
         {
           textoOpcion: 'Con esquemas y diagramas o pistas visuales.',
-          estilo: 'K',
+          estilo: 'V',
         },
       ],
     },

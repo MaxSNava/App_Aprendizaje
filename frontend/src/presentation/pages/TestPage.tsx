@@ -29,9 +29,9 @@ export const TestPage = () => {
     onSuccess: (data) => {
       toast.success(`Prueba creada exitosamente: ${data.tipoPrueba}`);
       if (data.tipoPrueba === 'vark') {
-        navigate('/vark');
+        navigate('/vark', { state: { pruebaId: data.id } });
       } else {
-        navigate('/mbti');
+        navigate('/mbti', { state: { pruebaId: data.id } });
       }
     }
   });

@@ -1,4 +1,4 @@
-export const AdminAdministracion = () => {
+export const AdminAdministracionPage = () => {
   return (
     <div>AdminAdministracion</div>
   )

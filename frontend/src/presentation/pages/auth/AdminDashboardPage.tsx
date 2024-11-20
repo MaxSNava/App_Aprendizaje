@@ -1,4 +1,4 @@
-export const AdminDashboard = () => {
+export const AdminDashboardPage = () => {
   return (
     <div>AdminDashboard</div>
   )

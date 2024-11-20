@@ -28,10 +28,10 @@ export class PruebasController {
     return this.pruebasService.findAll(paginationDto);
   }
 
-  @Get(':term')
-  findOne(@Param('term') term: string) {
-    return this.pruebasService.findOnePlain(term);
-  }
+  // @Get(':term')
+  // findOne(@Param('term') term: string) {
+  //   return this.pruebasService.findOnePlain(term);
+  // }
 
   @Patch(':id')
   update(
@@ -44,6 +44,11 @@ export class PruebasController {
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.pruebasService.remove(id);
+  }
+
+  @Get('vark')
+  async getVarkPreguntasYOpciones() {
+    return this.pruebasService.getVarkPreguntasYOpciones();
   }
 
   @Post(':pruebaId/vark')
