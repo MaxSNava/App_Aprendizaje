@@ -511,4 +511,18 @@ export class PruebasService {
       usuarioNombre: usuario?.nombre || 'Usuario no disponible',
     }));
   }
+
+  // ------------------- PDF -------------------
+  async obtenerPruebaConResultados(pruebaId: string) {
+    const prueba = await this.pruebaRepository.findOne({
+      where: { id: pruebaId },
+      relations: ['usuario', 'resultadoVark', 'resultadoMbti'],
+    });
+
+    if (!prueba) {
+      throw new NotFoundException(`Prueba con ID ${pruebaId} no encontrada`);
+    }
+
+    return prueba;
+  }
 }

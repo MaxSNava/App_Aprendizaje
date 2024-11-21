@@ -37,5 +37,6 @@ import {
   ],
   controllers: [PruebasController],
   providers: [PruebasService],
+  exports: [PruebasService],
 })
 export class PruebasModule {}
