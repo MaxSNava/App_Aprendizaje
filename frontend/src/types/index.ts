@@ -18,6 +18,12 @@ export type AuthRegistrationForm = Pick<
   Auth,
   "nickname" | "password" | "fullName"
 >;
+
+export type authUserSchema = Pick<
+  Auth,
+  "id" | "nickname" | "fullName" | "isActive" | "roles"
+>;
+
 export const AuthSchemaplus = z.object({
   id: z.string(),
   nickname: z.string(),

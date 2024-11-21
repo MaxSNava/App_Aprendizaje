@@ -32,10 +32,10 @@ export const AdminHomePage = () => {
             <Users size={32} className="text-blue-600" />
             <div>
               <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
-                Gestión de Usuarios
+                Gestión de Administracion
               </h2>
               <p className="text-sm md:text-base text-gray-600 mt-2">
-                Agrega, edita o elimina usuarios de la plataforma.
+                Agrega, edita o elimina Administradores de la plataforma.
               </p>
             </div>
           </div>

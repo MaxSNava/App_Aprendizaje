@@ -33,7 +33,7 @@ export const AdminLayout = () => {
           </Link>
           <Link to="/auth/administracion" className="flex items-center space-x-2 hover:text-blue-300" onClick={() => setSidebarOpen(false)}>
             <User size={20} />
-            <span>Gestión de Usuarios</span>
+            <span>Gestión de Administracion</span>
           </Link>
           <Link to="/auth/dashboard" className="flex items-center space-x-2 hover:text-blue-300" onClick={() => setSidebarOpen(false)}>
             <BarChart2 size={20} />

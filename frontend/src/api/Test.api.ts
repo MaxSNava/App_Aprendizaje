@@ -167,3 +167,17 @@ export async function getResultadosMbti(
     throw new Error("Error inesperado al obtener los resultados de MBTI");
   }
 }
+
+export async function descargarReporte(pruebaId: string) {
+  try {
+    const response = await api.get(`/reporte/${pruebaId}`, {
+      responseType: "blob", // Importante para recibir el archivo como blob
+    });
+    return response;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error("Error inesperado al descargar el reporte");
+  }
+}
