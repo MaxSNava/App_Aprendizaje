@@ -4,6 +4,8 @@ import { PruebasController } from './pruebas.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Prueba } from './entities/prueba.entity';
 import { Usuario } from '../usuarios/entities/usuario.entity';
+import { Grupo } from '../grupos/entities/grupo.entity';
+
 import {
   RespuestaVark,
   ResultadoVark,
@@ -22,6 +24,7 @@ import {
     TypeOrmModule.forFeature([
       Prueba,
       Usuario,
+      Grupo,
       RespuestaVark,
       ResultadoVark,
       VarkOpcion,

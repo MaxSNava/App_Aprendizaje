@@ -27,7 +27,14 @@ export class Prueba {
   })
   fechaRealizacion: Date;
 
-  // -- Relationships --
+  // Nuevo campo explícito
+  @Column({
+    type: 'uuid',
+    nullable: true,
+  })
+  usuarioId: string;
+
+  // Relaciones
   @ManyToOne(() => Usuario, (usuario) => usuario.pruebas, {
     onDelete: 'CASCADE',
     nullable: true,

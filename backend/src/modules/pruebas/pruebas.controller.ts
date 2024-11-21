@@ -92,4 +92,18 @@ export class PruebasController {
   ) {
     return this.pruebasService.obtenerResultadosMbti(pruebaId);
   }
+
+  // ------------------- Consultas -------------------
+  @Get('consultas/:tipoPrueba')
+  async obtenerResultadosPorCategoria(
+    @Param('tipoPrueba') tipoPrueba: string,
+    @Query('categoria') categoria: 'individual' | 'grupal' | 'total',
+    @Query('id') id?: string,
+  ) {
+    return this.pruebasService.obtenerResultadosPorCategoria(
+      tipoPrueba,
+      categoria,
+      id,
+    );
+  }
 }

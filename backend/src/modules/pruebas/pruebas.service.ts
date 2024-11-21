@@ -6,11 +6,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Repository, In } from 'typeorm';
 import { CreatePruebaDto } from './dto/create-prueba.dto';
 import { UpdatePruebaDto } from './dto/update-prueba.dto';
 import { Usuario } from '../usuarios/entities/usuario.entity';
 import { Prueba } from './entities/prueba.entity';
+import { Grupo } from '../grupos/entities/grupo.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { isUUID } from 'class-validator';
 import {
@@ -35,6 +36,8 @@ export class PruebasService {
     private readonly pruebaRepository: Repository<Prueba>,
     @InjectRepository(Usuario)
     private readonly usuarioRepository: Repository<Usuario>,
+    @InjectRepository(Grupo)
+    private readonly grupoRepository: Repository<Grupo>,
     // ------------------- VARK -------------------
     @InjectRepository(RespuestaVark)
     private readonly respuestaVarkRepository: Repository<RespuestaVark>,
@@ -439,5 +442,73 @@ export class PruebasService {
 
     // Retornar los resultados MBTI asociados
     return prueba.resultadoMbti;
+  }
+
+  // ------------------- Consultas -------------------
+  async obtenerResultadosPorCategoria(
+    tipoPrueba: string,
+    categoria: 'individual' | 'grupal' | 'total',
+    id?: string,
+  ) {
+    if (categoria === 'individual') {
+      if (!id)
+        throw new Error('ID de usuario es requerido para categoría individual');
+      return this.obtenerResultadosPorUsuario(tipoPrueba, id);
+    }
+
+    if (categoria === 'grupal') {
+      if (!id)
+        throw new Error('ID de grupo es requerido para categoría grupal');
+      return this.obtenerResultadosPorGrupo(tipoPrueba, id);
+    }
+
+    if (categoria === 'total') {
+      return this.obtenerResultadosTotales(tipoPrueba);
+    }
+
+    throw new Error('Categoría no válida');
+  }
+
+  private async obtenerResultadosPorUsuario(
+    tipoPrueba: string,
+    usuarioId: string,
+  ) {
+    return this.pruebaRepository.find({
+      where: { usuarioId, tipoPrueba },
+      relations: ['resultadoVark', 'resultadoMbti'],
+    });
+  }
+
+  private async obtenerResultadosPorGrupo(tipoPrueba: string, grupoId: string) {
+    const grupo = await this.grupoRepository.findOne({
+      where: { id: grupoId },
+      relations: ['usuarios'], // Incluye los usuarios relacionados con el grupo
+    });
+
+    if (!grupo) throw new Error('Grupo no encontrado');
+
+    const usuarioIds = grupo.usuarios.map((usuario) => usuario.id);
+
+    const pruebas = await this.pruebaRepository.find({
+      where: { tipoPrueba, usuario: { id: In(usuarioIds) } },
+      relations: ['usuario', 'resultadoVark', 'resultadoMbti'],
+    });
+
+    return pruebas.map(({ usuario, ...prueba }) => ({
+      ...prueba,
+      usuarioNombre: usuario?.nombre || 'Usuario no disponible',
+    }));
+  }
+
+  private async obtenerResultadosTotales(tipoPrueba: string) {
+    const pruebas = await this.pruebaRepository.find({
+      where: { tipoPrueba },
+      relations: ['usuario', 'resultadoVark', 'resultadoMbti'],
+    });
+
+    return pruebas.map(({ usuario, ...prueba }) => ({
+      ...prueba,
+      usuarioNombre: usuario?.nombre || 'Usuario no disponible',
+    }));
   }
 }

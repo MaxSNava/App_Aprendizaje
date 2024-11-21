@@ -28,10 +28,10 @@ export class UsuariosController {
     return this.usuariosService.findAll(paginationDto);
   }
 
-  @Get(':term')
-  findOne(@Param('term') term: string) {
-    return this.usuariosService.findOnePlain(term);
-  }
+  // @Get(':term')
+  // findOne(@Param('term') term: string) {
+  //   return this.usuariosService.findOnePlain(term);
+  // }
 
   @Patch(':id')
   update(
@@ -44,5 +44,11 @@ export class UsuariosController {
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.usuariosService.remove(id);
+  }
+
+  @Get('count')
+  async count(): Promise<{ count: number }> {
+    const count = await this.usuariosService.count();
+    return { count };
   }
 }

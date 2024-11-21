@@ -93,3 +93,36 @@ export async function getMbtiResults(pruebaId: string): Promise<ResultadoMbti> {
     throw new Error("Error inesperado al obtener los resultados");
   }
 }
+
+// --------------- Consultas ---------------
+export async function getTotalUsuarios(): Promise<number> {
+  try {
+    const { data } = await api.get("/usuarios/count");
+    return data.count;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error("Error inesperado al obtener el total de usuarios");
+  }
+}
+
+export async function getTotalTests(): Promise<{ vark: number; mbti: number }> {
+  try {
+    const varkResponse = await api.get(
+      "/pruebas/consultas/vark?categoria=total"
+    );
+    const mbtiResponse = await api.get(
+      "/pruebas/consultas/mbti?categoria=total"
+    );
+    return {
+      vark: varkResponse.data.length,
+      mbti: mbtiResponse.data.length,
+    };
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error("Error inesperado al obtener el total de tests");
+  }
+}

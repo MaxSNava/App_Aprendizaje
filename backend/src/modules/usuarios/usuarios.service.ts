@@ -129,4 +129,8 @@ export class UsuariosService {
       message: `Usuario #${id} deleted successfully`,
     };
   }
+
+  async count(): Promise<number> {
+    return await this.usuarioRepository.count();
+  }
 }

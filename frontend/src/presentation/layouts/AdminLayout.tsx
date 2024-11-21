@@ -26,15 +26,6 @@ export const AdminLayout = () => {
         fixed md:static inset-y-0 left-0 z-10 w-64 bg-blue-800 text-white p-6
         flex flex-col
       `}>
-        <div className="mb-8">
-          <Link to="/" onClick={() => setSidebarOpen(false)}>
-            <img
-              className="h-12 w-auto"
-              src="/academic.svg"
-              alt="Your Company Logo"
-            />
-          </Link>
-        </div>
         <nav className="space-y-4 flex-grow">
           <Link to="/auth/home" className="flex items-center space-x-2 hover:text-blue-300" onClick={() => setSidebarOpen(false)}>
             <User size={20} />
