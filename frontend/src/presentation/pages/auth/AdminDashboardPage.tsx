@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Bar, Doughnut } from 'react-chartjs-2'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js'
-import { Users, BookOpen, Award } from 'lucide-react'
+import { Users, BookOpen } from 'lucide-react'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement)
 
@@ -24,6 +24,9 @@ export const AdminDashboardPage = () => {
       }]
     }
   })
+
+  console.log(setChartData);
+  
 
   const barOptions = {
     responsive: true,

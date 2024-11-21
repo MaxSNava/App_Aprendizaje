@@ -8,6 +8,9 @@ export const AdminAdministracionPage = () => {
     { id: 3, name: 'Carlos López', email: 'carlos@example.com', role: 'Admin' },
   ])
 
+  console.log(setUsers);
+  
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-gray-800">Gestión de Usuarios</h1>
