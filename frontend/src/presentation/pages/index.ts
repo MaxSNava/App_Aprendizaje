@@ -4,6 +4,7 @@ export * from "./auth/AdminDashboardPage";
 export * from "./auth/AdminHomePage";
 export * from "./auth/AdminPage";
 export * from "./auth/LoginPage";
+export * from "./auth/LogoutPage";
 export * from "./auth/RegisterPage";
 // -- VARK --
 export * from "./vark/VarkResPage";
