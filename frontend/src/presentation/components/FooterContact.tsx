@@ -28,8 +28,18 @@ export const FooterContact = () => {
     <footer className="bg-gradient-to-b from-gray-100 to-gray-200 py-16">
       <div className="container mx-auto px-4 max-w-4xl">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-800">Contáctanos</h2>
-        <form onSubmit={handleSubmit} className="space-y-6 mb-12">
-          <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
+          <div className="relative w-full h-0 pb-[56.25%]">
+            <video
+              className="absolute top-0 left-0 w-full h-full object-cover rounded-lg shadow-lg"
+              controls
+              preload="metadata"
+            >
+              <source src="/mbti_vark.webm" type="video/webm" />
+              Tu navegador no soporta el elemento de video.
+            </video>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                 Nombre
@@ -64,33 +74,33 @@ export const FooterContact = () => {
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               </div>
             </div>
-          </div>
-          <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-              Mensaje
-            </label>
-            <div className="relative">
-              <textarea
-                id="message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                required
-                rows={4}
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Tu mensaje aquí..."
-              />
-              <MessageSquare className="absolute left-3 top-3 text-gray-400 h-5 w-5" />
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                Mensaje
+              </label>
+              <div className="relative">
+                <textarea
+                  id="message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                  rows={4}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Tu mensaje aquí..."
+                />
+                <MessageSquare className="absolute left-3 top-3 text-gray-400 h-5 w-5" />
+              </div>
             </div>
-          </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-lg"
-          >
-            {isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}
-            <Send className="ml-2 h-5 w-5" />
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-lg"
+            >
+              {isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}
+              <Send className="ml-2 h-5 w-5" />
+            </button>
+          </form>
+        </div>
         <div className="text-center text-gray-600">
           <p>
             Todos los derechos reservados &copy; {new Date().getFullYear()}
@@ -100,3 +110,4 @@ export const FooterContact = () => {
     </footer>
   )
 }
+

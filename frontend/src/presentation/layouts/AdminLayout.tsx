@@ -1,15 +1,33 @@
+import { useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { LogOut, User, BarChart2 } from 'lucide-react'
+import { LogOut, User, BarChart2, Menu, X } from 'lucide-react'
 
 export const AdminLayout = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
+
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
+      {/* Mobile menu button */}
+      <button
+        className="md:hidden fixed top-4 left-4 z-20 p-2 rounded-md bg-blue-800 text-white"
+        onClick={toggleSidebar}
+      >
+        {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
       {/* Sidebar */}
-      <aside className="w-64 bg-blue-800 text-white p-6">
+      <aside className={`
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:translate-x-0 transition-transform duration-300 ease-in-out
+        fixed md:static inset-y-0 left-0 z-10 w-64 bg-blue-800 text-white p-6
+        flex flex-col
+      `}>
         <div className="mb-8">
-          <Link to="/">
+          <Link to="/" onClick={() => setSidebarOpen(false)}>
             <img
               className="h-12 w-auto"
               src="/academic.svg"
@@ -17,22 +35,22 @@ export const AdminLayout = () => {
             />
           </Link>
         </div>
-        <nav className="space-y-4">
-          <Link to="/auth/home" className="flex items-center space-x-2 hover:text-blue-300">
+        <nav className="space-y-4 flex-grow">
+          <Link to="/auth/home" className="flex items-center space-x-2 hover:text-blue-300" onClick={() => setSidebarOpen(false)}>
             <User size={20} />
             <span>Inicio</span>
           </Link>
-          <Link to="/auth/administracion" className="flex items-center space-x-2 hover:text-blue-300">
+          <Link to="/auth/administracion" className="flex items-center space-x-2 hover:text-blue-300" onClick={() => setSidebarOpen(false)}>
             <User size={20} />
             <span>Gestión de Usuarios</span>
           </Link>
-          <Link to="/auth/dashboard" className="flex items-center space-x-2 hover:text-blue-300">
+          <Link to="/auth/dashboard" className="flex items-center space-x-2 hover:text-blue-300" onClick={() => setSidebarOpen(false)}>
             <BarChart2 size={20} />
             <span>Dashboard</span>
           </Link>
         </nav>
         <div className="mt-auto pt-6">
-          <Link to="/auth/logout" className="flex items-center space-x-2 hover:text-blue-300">
+          <Link to="/auth/logout" className="flex items-center space-x-2 hover:text-blue-300" onClick={() => setSidebarOpen(false)}>
             <LogOut size={20} />
             <span>Cerrar Sesión</span>
           </Link>
@@ -40,21 +58,13 @@ export const AdminLayout = () => {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-4 md:p-8 mt-16 md:mt-0">
         <Outlet />
       </main>
 
       <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
+        pauseOnHover={false}
+        pauseOnFocusLoss={false}
       />
     </div>
   )
