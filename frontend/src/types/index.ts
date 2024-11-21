@@ -41,11 +41,13 @@ export type UserFormData = Pick<User, "nombre" | "email" | "grupos"> & {
 
 /** Grupo **/
 export const grupoSchema = z.object({
+  id: z.string(),
   nombre: z.string(),
   descripcion: z.string(),
 });
 
 export type Grupo = z.infer<typeof grupoSchema>;
+export type GrupoFormData = Pick<Grupo, "nombre" | "descripcion">;
 
 /** Prueba **/
 export const pruebaSchema = z.object({

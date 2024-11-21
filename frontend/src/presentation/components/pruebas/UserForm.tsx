@@ -1,102 +1,118 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { useMutation } from '@tanstack/react-query';
-import { ErrorMessage } from '../ErrorMessage';
-import { GrupoForm } from './GrupoForm';
-import { UserFormData } from '../../../types';
-import { createUser } from '../../../api';
+import { useForm } from "react-hook-form";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { ErrorMessage } from "../ErrorMessage";
+import { UserFormData, Grupo } from "../../../types";
+import { createUser, getGroups } from "../../../api";
+import { useNavigate } from "react-router-dom";
 
-export const PruebasForm = () => {
-  const [showNewGropForm, setShowNewGropForm] = useState(false);
-
-  const navigate = useNavigate();
+export const UserForm = () => {
+  const navigate = useNavigate()
 
   const initialValues: UserFormData = {
-    nombre: '',
-    email: '',
-    grupos: []
+    nombre: "",
+    email: "",
+    grupos: [],
   };
 
-  const { register, handleSubmit, formState: { errors } } = useForm(
-    { defaultValues: initialValues }
-  );
-
-  const { mutate } = useMutation({
-    mutationFn: createUser,
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    onSuccess: (data) => {
-      toast.success(`Usuario creado exitosamente: ${data.nombre}`);
-      navigate('/');
-    }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: initialValues,
   });
 
-  const handleForm = (formData: UserFormData) => mutate(formData);
+  const { data: groups, isLoading: isLoadingGroups } = useQuery({
+    queryKey: ["groups"],
+    queryFn: getGroups,
+  });
+
+  const { mutate: createUserMutation } = useMutation({
+    mutationFn: createUser,
+    onError: (error) => {
+      toast.error(
+        error instanceof Error ? error.message : "Error al crear el usuario"
+      );
+    },
+    onSuccess: (data) => {
+      navigate("/");
+      toast.success(`Usuario creado exitosamente: ${data.nombre}`);
+    },
+  });
+
+  const handleFormSubmit = (formData: UserFormData) => {
+    createUserMutation(formData);
+  };
 
   return (
-    <>
-      <form className='p-2' onSubmit={handleSubmit(handleForm)}>
-        <div className="mb-5 space-y-3">
-          <label htmlFor="userName" className="text-sm uppercase font-bold">
-            Nombre del Usuario
-          </label>
-          <input
-            className="w-full p-3  border border-gray-200"
-            id="userName"
-            type="text"
-            placeholder="Nombre del Usuario"
-            {...register("nombre", {
-              required: "El nombre del Usuario es obligatorio",
-            })}
-          />
-
-          {errors.nombre && (
-            <ErrorMessage>{errors.nombre.message}</ErrorMessage>
-          )}
-        </div>
-
-        <div className="mb-5 space-y-3">
-          <label htmlFor="emailName" className="text-sm uppercase font-bold">
-            Email
-          </label>
-          <input
-            id="emailName"
-            className="w-full p-3  border border-gray-200"
-            type="email"
-            placeholder="Email"
-            {...register("email", {
-              required: "El email es obligatorio",
-            })}
-          />
-
-          {errors.email && (
-            <ErrorMessage>{errors.email.message}</ErrorMessage>
-          )}
-        </div>
-
+    <form className="p-4" onSubmit={handleSubmit(handleFormSubmit)}>
+      <div className="mb-5">
+        <label htmlFor="userName" className="text-sm uppercase font-bold">
+          Nombre del Usuario
+        </label>
         <input
-            className="bg-cyan-600 hover:bg-cyan-700 w-full p-3 text-white uppercase font-bold cursor-pointer transition-colors"
-            type="submit"
-            value="Crear Usuario"
-          />
-      </form>
-
-      <div className='flex flex-col justify-center items-center p-1'>
-        <button
-          className="bg-indigo-500 w-96 hover:bg-indigo-600  p-3 text-white uppercase font-bold cursor-pointer transition-colors rounded-xl"
-          type="button"
-          onClick={() => setShowNewGropForm(!showNewGropForm)}
-        >
-          {showNewGropForm ? 'Ocultar Formulario Nuevo Grupo' : 'Agregar Nuevo Grupo'}
-        </button>
-        {showNewGropForm && (
-          <GrupoForm />
+          id="userName"
+          className="w-full p-3 border border-gray-200 rounded"
+          type="text"
+          placeholder="Nombre del Usuario"
+          {...register("nombre", {
+            required: "El nombre del usuario es obligatorio",
+          })}
+        />
+        {errors.nombre && (
+          <ErrorMessage>{errors.nombre.message}</ErrorMessage>
         )}
       </div>
-    </>
 
-  )
-}
+      <div className="mb-5">
+        <label htmlFor="emailName" className="text-sm uppercase font-bold">
+          Email
+        </label>
+        <input
+          id="emailName"
+          className="w-full p-3 border border-gray-200 rounded"
+          type="email"
+          placeholder="Email del Usuario"
+          {...register("email", {
+            required: "El email del usuario es obligatorio",
+          })}
+        />
+        {errors.email && (
+          <ErrorMessage>{errors.email.message}</ErrorMessage>
+        )}
+      </div>
+
+      <div className="mb-5">
+        <p className="font-bold text-lg mb-2">Selecciona grupos para el usuario:</p>
+        {isLoadingGroups ? (
+          <p className="text-gray-500">Cargando grupos...</p>
+        ) : (
+          <div className="relative">
+            <select
+              className="w-full p-3 border border-gray-300 rounded-md"
+              multiple
+              {...register("grupos")}
+            >
+              {groups?.map((group: Grupo) => (
+                <option key={group.nombre} value={group.id}>
+                  {group.nombre} - {group.descripcion}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        {errors.grupos && (
+          <ErrorMessage>{errors.grupos.message}</ErrorMessage>
+        )}
+      </div>
+
+      <button
+        className="bg-cyan-600 hover:bg-cyan-700 w-full p-3 text-white uppercase font-bold rounded transition-colors"
+        type="submit"
+      >
+        Crear Usuario
+      </button>
+    </form>
+  );
+};

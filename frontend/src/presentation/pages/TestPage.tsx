@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { ArrowLeft, UserPlus, ChevronDown } from 'lucide-react'
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast, ToastContainer  } from 'react-toastify';
-import { ErrorMessage, PruebasForm } from '../components';
+import { ErrorMessage, UserForm } from '../components';
 import { PruebaFormData, User } from '../../types';
 import { createTest, getUsers } from '../../api';
 
@@ -137,7 +137,7 @@ export const TestPage = () => {
         <UserPlus className="mr-2" />
         {showNewUserForm ? 'Ocultar Formulario Nuevo Usuario' : 'Agregar Nuevo Usuario'}
       </button>
-      {showNewUserForm && <PruebasForm />}
+      {showNewUserForm && <UserForm />}
     </div>
 
     <ToastContainer position="bottom-right" />
