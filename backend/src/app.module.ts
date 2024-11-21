@@ -9,6 +9,7 @@ import { ContactoModule } from './modules/contacto/contacto.module';
 import { CommonModule } from './common/common.module';
 import { ReporteModule } from './modules/reporte/reporte.module';
 import { SeedModule } from './seed/seed.module';
+import { PrinterModule } from './modules/printer/printer.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { SeedModule } from './seed/seed.module';
     CommonModule,
     ReporteModule,
     SeedModule,
+    PrinterModule,
   ],
 })
 export class AppModule {}

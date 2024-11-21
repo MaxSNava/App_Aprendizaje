@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bar, Doughnut } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,6 +13,7 @@ import {
 } from "chart.js";
 import { Users, BookOpen } from "lucide-react";
 import { useDashboardData } from "../../../hooks/useDashboardData"; 
+import { SearchResults } from "../../components"
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -74,19 +75,6 @@ export const AdminDashboardPage = () => {
     }
   }, [totalUsuarios, totalTests]);
 
-  const barOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Usuarios Registrados por Mes",
-      },
-    },
-  };
-
   const doughnutOptions = {
     responsive: true,
     plugins: {
@@ -137,7 +125,7 @@ export const AdminDashboardPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <Bar data={chartData.barData} options={barOptions} />
+          <SearchResults />
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <Doughnut data={chartData.doughnutData} options={doughnutOptions} />

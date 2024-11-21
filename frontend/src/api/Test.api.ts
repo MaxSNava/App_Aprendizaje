@@ -8,6 +8,7 @@ import {
   PruebaVarkRes,
   ResultadoVark,
   ResultadoMbti,
+  ResultadoItem,
 } from "../types";
 
 export async function createTest(formData: PruebaFormData) {
@@ -124,5 +125,45 @@ export async function getTotalTests(): Promise<{ vark: number; mbti: number }> {
       throw new Error(error.response.data.message);
     }
     throw new Error("Error inesperado al obtener el total de tests");
+  }
+}
+
+// --------------- Consultas Personalizadas ---------------
+type Params = {
+  categoria: string;
+  id?: string;
+};
+
+export async function getResultadosVark(
+  categoria: string,
+  id?: string
+): Promise<ResultadoItem[]> {
+  try {
+    const params: Params = { categoria };
+    if (id) params.id = id;
+    const { data } = await api.get("/pruebas/consultas/vark", { params });
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error("Error inesperado al obtener los resultados de VARK");
+  }
+}
+
+export async function getResultadosMbti(
+  categoria: string,
+  id?: string
+): Promise<ResultadoItem[]> {
+  try {
+    const params: Params = { categoria };
+    if (id) params.id = id;
+    const { data } = await api.get("/pruebas/consultas/mbti", { params });
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error("Error inesperado al obtener los resultados de MBTI");
   }
 }

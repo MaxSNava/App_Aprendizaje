@@ -122,3 +122,15 @@ export const resultadoMbtiSchema = z.object({
 });
 
 export type ResultadoMbti = z.infer<typeof resultadoMbtiSchema>;
+
+export const resultadoItemSchema = z.object({
+  id: z.string(),
+  tipoPrueba: z.enum(["vark", "mbti"]),
+  fechaRealizacion: z.string(),
+  usuarioId: z.string(),
+  usuarioNombre: z.string(),
+  resultadoVark: resultadoVarkSchema.optional(),
+  resultadoMbti: resultadoMbtiSchema.optional(),
+});
+
+export type ResultadoItem = z.infer<typeof resultadoItemSchema>;
